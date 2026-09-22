@@ -3,38 +3,40 @@
 @import "../vendor/shadcn-tailwind-4.13.0.css";
 
 :root {
-  --background: #f7f1e8;
-  --foreground: #172d24;
-  --card: #f7f1e8;
-  --card-foreground: #172d24;
-  --popover: #f7f1e8;
-  --popover-foreground: #172d24;
-  --primary: #172d24;
-  --primary-foreground: #fffaf2;
-  --secondary: #e8dac5;
-  --secondary-foreground: #172d24;
-  --muted: #efe5d5;
-  --muted-foreground: #52695b;
-  --accent: #e8dac5;
-  --accent-foreground: #172d24;
+  --background: #ffffff;
+  --foreground: #1c1b19;
+  --card: #ffffff;
+  --card-foreground: #1c1b19;
+  --popover: #ffffff;
+  --popover-foreground: #1c1b19;
+  --primary: #1c1b19;
+  --primary-foreground: #ffffff;
+  --secondary: #f3f2ef;
+  --secondary-foreground: #1c1b19;
+  --muted: #f3f2ef;
+  --muted-foreground: #6b6a65;
+  --accent: #f3f2ef;
+  --accent-foreground: #1c1b19;
   --destructive: #c95736;
-  --border: #172d241c;
-  --input: #172d241c;
-  --ring: #c95736;
-  --chart-1: #c95736;
-  --chart-2: #365042;
-  --chart-3: #d6ad67;
-  --chart-4: #d8e1b8;
-  --chart-5: #7fa6ae;
+  --border: #1c1b1914;
+  --input: #1c1b1914;
+  --ring: #1c1b19;
+  --chart-1: #e3b25c;
+  --chart-2: #8fa58c;
+  --chart-3: #c9b3dc;
+  --chart-4: #e7a488;
+  --chart-5: #9bb7c4;
   --radius: 1rem;
-  --sidebar: #f7f1e8;
-  --sidebar-foreground: #172d24;
-  --sidebar-primary: #172d24;
-  --sidebar-primary-foreground: #fffaf2;
-  --sidebar-accent: #e8dac5;
-  --sidebar-accent-foreground: #172d24;
-  --sidebar-border: #172d241c;
-  --sidebar-ring: #c95736;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #1c1b19;
+  --sidebar-primary: #1c1b19;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f3f2ef;
+  --sidebar-accent-foreground: #1c1b19;
+  --sidebar-border: #1c1b1914;
+  --sidebar-ring: #1c1b19;
+  --placeholder: #e6e5e1;
+  --placeholder-ink: #a3a29c;
 }
 
 @theme inline {
@@ -73,7 +75,8 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-  --font-sans: "Avenir Next", Avenir, "Segoe UI", sans-serif;
+  --font-sans: "Inter", "Segoe UI", sans-serif;
+  --font-serif: "Marcellus", Georgia, serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
@@ -89,4 +92,83 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-::selection { background: #d6ad67; color: #172d24; }
+::selection { background: #f1dfb5; color: #1c1b19; }
+
+.font-serif { font-family: var(--font-serif); letter-spacing: -0.04em; }
+
+/* Blocos cinza que marcam onde as ilustrações vão entrar */
+.placeholder-img {
+  background-color: var(--placeholder);
+  color: var(--placeholder-ink);
+}
+
+/* Virada de carta */
+.carta-3d { perspective: 1400px; }
+.carta-miolo {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 900ms cubic-bezier(.2,.7,.2,1);
+}
+.carta-miolo.virada { transform: rotateY(180deg); }
+.carta-lado {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.carta-frente { transform: rotateY(180deg); }
+
+@keyframes respirar {
+  0%, 100% { transform: scale(0.82); opacity: .55; }
+  50% { transform: scale(1); opacity: 1; }
+}
+.respirar { animation: respirar 8s ease-in-out infinite; }
+
+/* Fundo da imersão: pulso bem visível, 4s crescendo (inspira) e 4s recolhendo (solta) */
+@keyframes respirar-fundo {
+  0%, 100% { transform: scale(0.42); opacity: 0.55; }
+  50% { transform: scale(1.08); opacity: 1; }
+}
+.respirar-fundo { animation: respirar-fundo 8s cubic-bezier(.45,0,.55,1) infinite; will-change: transform, opacity; }
+
+@keyframes flutuar {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.flutuar { }
+
+@keyframes onda {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.onda { animation: onda 38s linear infinite; }
+
+@keyframes surgir {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+.surgir { animation: surgir 900ms cubic-bezier(.2,.7,.2,1) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .respirar, .respirar-fundo, .flutuar, .onda, .surgir { animation: none; }
+  .carta-miolo { transition: none; }
+}
+
+@keyframes progresso { from { width: 0; } to { width: 100%; } }
+.barra-progresso { animation: progresso linear forwards; }
+
+/* Largura do site (como na referência: larga, com respiro lateral) */
+.conteiner {
+  width: 100%;
+  max-width: 94rem;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+}
+@media (min-width: 640px) { .conteiner { padding-inline: 2.5rem; } }
+@media (min-width: 1024px) { .conteiner { padding-inline: 4.5rem; } }
+
+/* Sem viúvas nem órfãs: títulos equilibrados, parágrafos com quebra cuidadosa */
+h1, h2, h3, h4 { text-wrap: balance; }
+p, li, dd, dt, blockquote, figcaption, label { text-wrap: pretty; }

@@ -1,317 +1,231 @@
-"use client";
-
-import { useState } from "react";
-import {
-  ArrowDown,
-  ArrowRight,
-  ArrowUpRight,
-  BookOpenText,
-  FlowerLotus,
-  HandHeart,
-  Handshake,
-  Leaf,
-  Palette,
-  Quotes,
-  Sparkle,
-} from "@phosphor-icons/react";
-
+import { BookOpenText, Cards, FlowerLotus, HandHeart, MoonStars, Storefront, UsersThree, Wind } from "@phosphor-icons/react/dist/ssr";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { SecaoDividida } from "@/components/secao-dividida";
+import { cartas, familias } from "@/lib/cartas";
 
-const cards = [
-  {
-    name: "A Visionária",
-    invitation: "Um novo olhar pode estar pedindo passagem.",
-    image: "/cartas/visionaria.webp",
-  },
-  {
-    name: "A Mensageira",
-    invitation: "Escute o que chega com delicadeza antes de responder.",
-    image: "/cartas/mensageira.webp",
-  },
-  {
-    name: "A Alquimista",
-    invitation: "Há matéria preciosa no que você ainda chama de mudança.",
-    image: "/cartas/alquimista.webp",
-  },
-  {
-    name: "A Curandeira",
-    invitation: "Nem todo cuidado faz barulho; permita-se recebê-lo.",
-    image: "/cartas/curandeira.webp",
-  },
-  {
-    name: "A Sacerdotisa do Voo",
-    invitation: "O próximo passo pode nascer de uma escuta mais alta.",
-    image: "/cartas/sacerdotisa.webp",
-  },
-  {
-    name: "A Grande Mãe",
-    invitation: "Há uma força generosa sustentando o que está por vir.",
-    image: "/cartas/grande-mae.webp",
-  },
+// Leque da abertura: posição no arco, giro e altura de cada carta
+const leque = [
+  { n: 4, giro: -21, y: 58, x: -3 },
+  { n: 6, giro: -14, y: 24, x: -2 },
+  { n: 19, giro: -7, y: 6, x: -1 },
+  { n: 1, giro: 0, y: 0, x: 0 },
+  { n: 20, giro: 7, y: 6, x: 1 },
+  { n: 24, giro: 14, y: 24, x: 2 },
+  { n: 27, giro: 21, y: 58, x: 3 },
 ];
 
-export default function Home() {
-  const [drawnCard, setDrawnCard] = useState<number | null>(null);
-  const activeCard = cards[drawnCard ?? 0];
+// Esferas do card "Um baralho completo": cada uma representa um tipo de parceria
+const esferas = [
+  { imagem: "/secoes/esfera-1.webp", Icone: BookOpenText, rotulo: "Edição e distribuição por editora" },
+  { imagem: "/secoes/esfera-2.webp", Icone: Storefront, rotulo: "Lojas, marcas e licenciamento" },
+  { imagem: "/secoes/esfera-3.webp", Icone: UsersThree, rotulo: "Rodas e experiências" },
+];
 
-  const drawCard = () => {
-    let next = Math.floor(Math.random() * cards.length);
-    if (cards.length > 1 && next === drawnCard) next = (next + 1) % cards.length;
-    setDrawnCard(next);
-  };
+const tituloSecao = "font-serif text-[2.2rem] leading-[1.08] sm:text-[2.9rem]";
 
-  const goToDraw = () => {
-    document.getElementById("tirar")?.scrollIntoView({ behavior: "smooth" });
-  };
-
+/** Ilustração sem texto (pasta "Baralho de Arquétipos"). */
+function Arte({ n, className, prioridade = false }: { n: number; className?: string; prioridade?: boolean }) {
   return (
-    <main className="overflow-hidden bg-[#f7f1e8] text-[#172d24]">
-      <header className="sticky top-0 z-30 border-b border-[#172d24]/10 bg-[#f7f1e8]/90 backdrop-blur-md">
-        <div className="mx-auto flex h-[4.6rem] max-w-7xl items-center justify-between px-5 sm:px-8 lg:px-12">
-          <a className="group flex items-center gap-2" href="#inicio" aria-label="Jardim Arquetípico, início">
-            <span className="grid size-8 place-items-center rounded-full border border-[#c95736] text-[#c95736] transition-transform duration-300 group-hover:rotate-12">
-              <Sparkle size={16} weight="fill" aria-hidden="true" />
-            </span>
-            <span className="font-serif text-lg tracking-[-0.04em] sm:text-xl">Jardim Arquetípico</span>
-          </a>
-          <nav className="hidden items-center gap-7 text-sm text-[#365042] md:flex" aria-label="Navegação principal">
-            <a className="transition-colors hover:text-[#c95736]" href="#oraculo">O oráculo</a>
-            <a className="transition-colors hover:text-[#c95736]" href="#tirar">Uma carta</a>
-            <a className="transition-colors hover:text-[#c95736]" href="#parcerias">Parcerias</a>
-          </nav>
-          <Button onClick={goToDraw} className="rounded-full bg-[#172d24] px-4 text-[#fffaf2] hover:bg-[#c95736] sm:px-5">
-            Tirar uma carta
+    <img
+      src={`/cartas/${n}-arte.webp`}
+      alt={cartas[n - 1].nome}
+      width={720}
+      height={1122}
+      loading={prioridade ? "eager" : "lazy"}
+      fetchPriority={prioridade ? "high" : "auto"}
+      decoding="async"
+      className={className}
+    />
+  );
+}
+
+export default function Home() {
+  return (
+    <main className="overflow-x-clip">
+      {/* Abertura */}
+      <section className="conteiner flex flex-col pt-14 text-center sm:block sm:pt-20">
+        <h1 className="surgir mx-auto max-w-[15ch] font-serif text-[2.9rem] leading-[1.02] sm:text-[4.8rem]">
+          O campo onde os arquétipos florescem
+        </h1>
+        <p className="surgir mx-auto mt-6 max-w-[46rem] text-[1rem] leading-relaxed text-[#55544f]" style={{ animationDelay: "150ms" }}>
+          Trinta mulheres, cada uma guardando um pedaço do seu ciclo.
+          <br className="hidden sm:block" /> Respire, escolha uma carta e deixe a imagem dizer o que as palavras ainda não sabem.
+        </p>
+        <div className="surgir order-last mt-14 flex flex-wrap items-center justify-center gap-3 sm:order-none sm:mt-9" style={{ animationDelay: "300ms" }}>
+          <Button asChild size="lg">
+            <a href="/imersao">Tirar uma carta</a>
+          </Button>
+          <Button asChild size="lg" variant="secondary">
+            <a href="/parcerias">
+              Para editoras e parcerias
+            </a>
           </Button>
         </div>
-      </header>
 
-      <section id="inicio" className="relative mx-auto grid min-h-[calc(100svh-4.6rem)] max-w-7xl items-center gap-10 px-5 py-12 sm:px-8 lg:grid-cols-[1.02fr_.98fr] lg:px-12 lg:py-16">
-        <div className="relative z-10 max-w-2xl">
-          <p className="mb-5 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.19em] text-[#c95736]">
-            <span className="h-px w-7 bg-[#c95736]" /> Um oráculo visual feminino
-          </p>
-          <h1 className="max-w-xl font-serif text-5xl leading-[.93] tracking-[-0.065em] text-[#172d24] sm:text-6xl lg:text-7xl">
-            Existem vozes que só florescem quando são ouvidas.
-          </h1>
-          <p className="mt-7 max-w-lg text-lg leading-relaxed text-[#365042]">
-            Jardim Arquetípico reúne trinta figuras simbólicas para abrir espaço à imaginação, aos ciclos e às perguntas que chegam sem aviso.
-          </p>
-          <div className="mt-9 flex flex-wrap items-center gap-3">
-            <Button onClick={goToDraw} size="lg" className="rounded-full bg-[#c95736] px-6 text-[#fffaf2] hover:bg-[#ad3e25]">
-              Encontrar uma carta <ArrowRight size={18} weight="bold" aria-hidden="true" />
-            </Button>
-            <Button asChild variant="ghost" size="lg" className="rounded-full px-4 text-[#172d24] hover:bg-[#e8dac5]">
-              <a href="#oraculo">Conhecer o projeto <ArrowDown size={17} aria-hidden="true" /></a>
-            </Button>
-          </div>
-          <div className="mt-12 flex items-center gap-4 text-sm text-[#52695b]">
-            <span className="font-serif text-3xl leading-none text-[#c95736]">30</span>
-            <span className="border-l border-[#172d24]/15 pl-4">arquétipos para olhar por dentro<br className="hidden sm:block" /> e se reconhecer no mundo</span>
-          </div>
-        </div>
-
-        <div className="relative mx-auto flex w-full max-w-[32rem] items-center justify-center py-4 lg:py-0">
-          <div className="absolute inset-[9%] rounded-full bg-[#d8e1b8] blur-3xl" aria-hidden="true" />
-          <div className="relative w-[min(78vw,23rem)] rotate-[4deg] rounded-[2rem] bg-[#172d24] p-2 shadow-[20px_25px_0_#d6ad67] transition-transform duration-500 hover:rotate-0 sm:w-[21rem]">
-            <div className="overflow-hidden rounded-[1.55rem] bg-[#e8dac5]">
-              <img className="h-[26rem] w-full object-cover object-top sm:h-[31rem]" src="/cartas/visionaria.webp" alt="Ilustração da carta A Visionária, retratando uma mulher com um pássaro nas mãos" />
+        {/* Leque de ilustrações */}
+        <div
+          className="relative mx-auto mt-4 h-[15.5rem] max-w-[62rem] [--passo:5.6rem] sm:mt-14 sm:h-[18rem] sm:[--passo:5.2rem] md:h-[20rem] md:[--passo:6.6rem] lg:h-[23rem] lg:[--passo:8.8rem]"
+          aria-label="Algumas ilustrações do baralho"
+        >
+          {leque.map((c, i) => (
+            <div
+              key={c.n}
+              className={`group absolute bottom-0 left-1/2 w-[9rem] sm:w-[10rem] md:w-[11.5rem] lg:w-[13.5rem] ${i === 0 || i === 6 ? "hidden sm:block" : ""}`}
+              style={
+                {
+                  "--x": `${c.x}`,
+                  transform: `translateX(calc(-50% + var(--x) * var(--passo))) translateY(${c.y}px) rotate(${c.giro}deg)`,
+                  transformOrigin: "50% 120%",
+                  zIndex: 10 - Math.abs(c.x),
+                } as React.CSSProperties
+              }
+            >
+              <span className="surgir block" style={{ animationDelay: `${200 + Math.abs(c.x) * 90}ms` }}>
+                <Arte
+                  n={c.n}
+                  prioridade={Math.abs(c.x) <= 1}
+                  className="w-full rounded-[14px] shadow-[0_30px_60px_-30px_rgba(40,20,10,0.45)] transition-transform duration-500 group-hover:-translate-y-5 sm:rounded-[18px]"
+                />
+              </span>
             </div>
-            <div className="absolute bottom-5 left-5 rounded-full bg-[#f7f1e8] px-4 py-2 text-xs font-semibold uppercase tracking-[0.15em] text-[#172d24]">
-              a imagem que vê antes
-            </div>
-          </div>
-          <p className="absolute bottom-0 right-0 max-w-36 font-serif text-xl leading-[.95] text-[#c95736] sm:right-3">um jardim que começa dentro</p>
+          ))}
         </div>
       </section>
 
-      <section id="tirar" className="relative bg-[#172d24] px-5 py-20 text-[#fffaf2] sm:px-8 lg:px-12 lg:py-28">
-        <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[.82fr_1.18fr]">
-          <div className="max-w-md">
-            <p className="mb-5 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.19em] text-[#d6ad67]">
-              <span className="h-px w-7 bg-[#d6ad67]" /> uma pausa para você
-            </p>
-            <h2 className="font-serif text-4xl leading-[.98] tracking-[-0.055em] sm:text-5xl">Uma carta para este momento.</h2>
-            <p className="mt-6 text-lg leading-relaxed text-[#d7e1d0]">Não há respostas prontas aqui. Há imagens que acompanham, deslocam e devolvem uma pergunta à sua própria linguagem.</p>
-            <div className="mt-8 flex items-center gap-3 text-sm text-[#d6ad67]">
-              <HandHeart size={24} weight="duotone" aria-hidden="true" />
-              <span>Toque na carta. Ela revela só o início.</span>
-            </div>
-          </div>
-
-          <Card className="overflow-hidden rounded-[2rem] border-[#fffaf2]/15 bg-[#f7f1e8] py-0 text-[#172d24] shadow-2xl">
-            <CardContent className="grid min-h-[27rem] p-0 sm:grid-cols-[.82fr_1.18fr]">
-              <button onClick={drawCard} className="group relative min-h-[22rem] overflow-hidden bg-[#e8dac5] text-left focus-visible:outline-2 focus-visible:outline-offset-[-6px] focus-visible:outline-[#c95736] sm:min-h-full" aria-label="Tirar uma carta do Jardim Arquetípico">
-                <img className="h-full w-full object-cover object-top transition duration-700 group-hover:scale-[1.035]" src={activeCard.image} alt="Ilustração parcial de uma carta do Jardim Arquetípico" />
-                <span className="absolute inset-x-0 bottom-0 h-[38%] bg-gradient-to-t from-[#172d24]/82 to-transparent" aria-hidden="true" />
-                <span className="absolute bottom-5 left-5 rounded-full border border-[#fffaf2]/40 bg-[#172d24]/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#fffaf2] backdrop-blur-sm">
-                  {drawnCard === null ? "toque para tirar" : "puxar outra"}
-                </span>
-              </button>
-              <div className="flex flex-col justify-between p-7 sm:p-9">
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#c95736]">{drawnCard === null ? "a carta espera" : "sua carta agora"}</p>
-                  <h3 aria-live="polite" className="mt-4 font-serif text-4xl leading-[.95] tracking-[-0.05em] sm:text-5xl">{drawnCard === null ? "O jardim está em silêncio." : activeCard.name}</h3>
-                  <p className="mt-6 max-w-sm text-lg leading-relaxed text-[#52695b]">{drawnCard === null ? "Escolha um instante. A primeira imagem chega quando você toca." : activeCard.invitation}</p>
-                </div>
-                <div className="mt-8 border-t border-[#172d24]/10 pt-5">
-                  <p className="text-sm text-[#52695b]">O significado se abre no encontro com a sua história.</p>
-                  <Button onClick={drawCard} variant="ghost" className="mt-3 rounded-full px-0 text-[#c95736] hover:bg-transparent hover:text-[#ad3e25]">
-                    {drawnCard === null ? "Revelar o primeiro fio" : "Deixar outra imagem chegar"} <ArrowRight size={17} weight="bold" aria-hidden="true" />
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-
-      <section id="oraculo" className="px-5 py-20 sm:px-8 lg:px-12 lg:py-28">
-        <div className="mx-auto max-w-7xl">
-          <div className="grid gap-10 lg:grid-cols-[.9fr_1.1fr] lg:items-end">
-            <div>
-              <p className="mb-5 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.19em] text-[#c95736]">
-                <span className="h-px w-7 bg-[#c95736]" /> O que floresce aqui
+      {/* Banner da imersão: imagem em todo o banner, tarja branca com o texto à direita */}
+      <section className="conteiner mt-36 sm:mt-48">
+        <div className="relative overflow-hidden rounded-[28px] bg-[#f2f1ed]">
+          <img
+            src="/banner-imersao.webp"
+            alt="Mulher de olhos fechados entre folhas, sob a lua"
+            width={2000}
+            height={1121}
+            loading="lazy"
+            decoding="async"
+            className="block aspect-[2000/1121] w-full object-cover md:absolute md:inset-0 md:h-full md:aspect-auto md:object-left"
+          />
+          <div className="relative md:flex md:min-h-[36rem] md:items-center md:justify-end md:p-10 lg:min-h-[42rem] lg:p-14">
+            <div className="bg-[#f2f1ed] p-7 sm:p-10 md:max-w-[30rem] md:rounded-[24px] md:bg-white lg:max-w-[34rem] lg:p-12">
+              <span className="inline-flex items-center gap-2 rounded-full bg-[#f2f1ed] px-4 py-2 text-[0.85rem]">
+                <Wind size={15} /> Imersão
+              </span>
+              <p className="mt-6 font-serif text-[1.5rem] leading-[1.25] sm:text-[1.8rem]">
+                Três respirações. Trinta cartas viradas. Uma delas chama o seu olhar e se revela para você, com a frase que estava esperando para ser dita.
               </p>
-              <h2 className="max-w-lg font-serif text-4xl leading-[.98] tracking-[-0.06em] sm:text-5xl">Um objeto para sentir, olhar de novo e conversar.</h2>
+              <Button asChild size="lg" className="mt-8">
+                <a href="/imersao">Começar a imersão</a>
+              </Button>
             </div>
-            <p className="max-w-xl text-lg leading-relaxed text-[#52695b] lg:justify-self-end">O Jardim Arquetípico aproxima imagens, intuição e design para tornar visível aquilo que muitas vezes só se percebe por dentro.</p>
-          </div>
-
-          <div className="mt-12 grid gap-4 md:grid-cols-3">
-            <Card className="rounded-[1.65rem] border-[#172d24]/10 bg-[#efe5d5] py-0 shadow-none">
-              <CardContent className="p-7">
-                <BookOpenText size={30} weight="duotone" className="text-[#c95736]" aria-hidden="true" />
-                <h3 className="mt-8 font-serif text-3xl tracking-[-0.045em]">30 arquétipos</h3>
-                <p className="mt-3 leading-relaxed text-[#52695b]">Personagens e cenas que não fecham uma leitura: abrem caminhos para muitas.</p>
-              </CardContent>
-            </Card>
-            <Card className="rounded-[1.65rem] border-[#172d24]/10 bg-[#d8e1b8] py-0 shadow-none">
-              <CardContent className="p-7">
-                <Palette size={30} weight="duotone" className="text-[#365042]" aria-hidden="true" />
-                <h3 className="mt-8 font-serif text-3xl tracking-[-0.045em]">Imagem como portal</h3>
-                <p className="mt-3 leading-relaxed text-[#365042]">Cada ilustração é uma presença: íntima o bastante para tocar e ampla o bastante para permanecer.</p>
-              </CardContent>
-            </Card>
-            <Card className="rounded-[1.65rem] border-[#172d24]/10 bg-[#d6ad67] py-0 shadow-none">
-              <CardContent className="p-7">
-                <FlowerLotus size={30} weight="duotone" className="text-[#172d24]" aria-hidden="true" />
-                <h3 className="mt-8 font-serif text-3xl tracking-[-0.045em]">Ritual cotidiano</h3>
-                <p className="mt-3 leading-relaxed text-[#365042]">Uma pausa possível para começar o dia, atravessar uma decisão ou compartilhar uma roda.</p>
-              </CardContent>
-            </Card>
           </div>
         </div>
       </section>
 
-      <section className="bg-[#e8dac5] px-5 py-20 sm:px-8 lg:px-12 lg:py-28">
-        <div className="mx-auto max-w-7xl">
-          <div className="flex flex-col justify-between gap-8 md:flex-row md:items-end">
-            <div className="max-w-xl">
-              <p className="mb-5 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.19em] text-[#c95736]">
-                <span className="h-px w-7 bg-[#c95736]" /> o baralho por perto
-              </p>
-              <h2 className="font-serif text-4xl leading-[.98] tracking-[-0.06em] sm:text-5xl">Há imagens que pedem para morar nas mãos.</h2>
-            </div>
-            <p className="max-w-sm text-base leading-relaxed text-[#52695b]">Uma pequena amostra do universo visual. A mensagem completa fica guardada para o encontro com o baralho.</p>
-          </div>
-          <div className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-            {cards.map((card, index) => (
-              <div key={card.name} className={`group overflow-hidden rounded-[1.35rem] border border-[#172d24]/10 bg-[#f7f1e8] p-1.5 shadow-sm ${index % 2 ? "translate-y-7" : ""}`}>
-                <div className="relative aspect-[.65] overflow-hidden rounded-[1.05rem]">
-                  <img loading="lazy" className="h-full w-full object-cover object-top transition duration-500 group-hover:scale-105" src={card.image} alt={`Detalhe da ilustração ${card.name}`} />
-                  <div className="absolute inset-x-0 bottom-0 h-[36%] bg-gradient-to-t from-[#172d24]/80 to-transparent" aria-hidden="true" />
-                  <p className="absolute bottom-3 left-3 right-3 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#fffaf2]">{card.name}</p>
+      {/* Seções em lista */}
+      <section className="conteiner mt-32 sm:mt-40">
+        <h2 className={`max-w-[17ch] ${tituloSecao}`}>Um oráculo para cada estação da alma</h2>
+        <p className="mt-5 max-w-[36rem] text-[1rem] leading-relaxed text-[#55544f]">
+          Às vezes a gente só precisa de uma imagem para lembrar do que já sabe. O jardim acompanha você do silêncio ao gesto.
+        </p>
+
+        <div className="mt-20 space-y-24 sm:space-y-32">
+          <SecaoDividida
+            etiqueta="O oráculo"
+            titulo="Trinta espelhos para você se reconhecer"
+            itens={[
+              { titulo: "Uma frase na voz da própria carta", texto: "Cada arquétipo fala em primeira pessoa. Leia em voz alta e perceba o que se acomoda no corpo.", rotulo: "", imagem: "/secoes/espelhos-1.webp" },
+              { titulo: "Luz e sombra, lado a lado", texto: "O dom de cada mulher e o que acontece quando ele passa do ponto. Nada é castigo: tudo é um aviso carinhoso.", rotulo: "", imagem: "/secoes/espelhos-2.webp" },
+              { titulo: "Um pequeno ritual para levar para o dia", texto: "A ativação tira a carta do papel e a coloca nas suas mãos. Um gesto simples, para fazer ainda hoje.", rotulo: "", imagem: "/secoes/espelhos-3.webp" },
+            ]}
+          />
+          <SecaoDividida
+            invertida
+            etiqueta="Seis famílias"
+            titulo="Um jardim com canteiros, estações e luas"
+            itens={[
+              { titulo: "Direções e Centro", texto: familias[0].resumo, rotulo: "", imagem: "/secoes/familias-1.webp" },
+              { titulo: "Animais Mestres e Três Mundos", texto: "A serpente, o puma e o condor guardam o mundo de baixo, o do meio e o de cima.", rotulo: "", imagem: "/secoes/familias-2.webp" },
+              { titulo: "Quatro Elementos", texto: familias[3].resumo, rotulo: "", imagem: "/secoes/familias-3.webp" },
+              { titulo: "Ciclo Lunar", texto: familias[5].resumo, rotulo: "", imagem: "/secoes/familias-4.webp" },
+            ]}
+          />
+        </div>
+      </section>
+
+      {/* Grade de cards */}
+      <section className="conteiner mt-36 sm:mt-44">
+        <h2 className={`max-w-[17ch] ${tituloSecao}`}>Pronto para sair do jardim e chegar às mãos</h2>
+        <p className="mt-5 max-w-[36rem] text-[1rem] leading-relaxed text-[#55544f]">
+          Ilustrações finalizadas, textos escritos, identidade criada. O Jardim Arquetípico está esperando a editora e as parcerias certas para florescer.
+        </p>
+        <div className="mt-14 grid gap-3 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
+          <div className="flex flex-col items-center rounded-[28px] bg-[#f2f1ed] px-5 py-10 text-center sm:px-6 sm:py-16">
+            <h3 className="font-serif text-[1.8rem] leading-tight sm:text-[2.6rem]">Um baralho completo</h3>
+            <p className="mt-2 text-[0.92rem] text-[#77766f]">Cartas, livreto e um site para experimentar</p>
+            <div className="my-9 flex items-center justify-center sm:my-12">
+              {esferas.map(({ imagem, Icone, rotulo }, i) => (
+                <div
+                  key={imagem}
+                  className={`relative shrink-0 overflow-hidden rounded-full border-[6px] border-[#f2f1ed] ${i === 1 ? "z-10 h-32 w-32 sm:h-52 sm:w-52" : "h-24 w-24 sm:h-40 sm:w-40"} ${i === 0 ? "-mr-6 sm:-mr-8" : ""} ${i === 2 ? "-ml-6 sm:-ml-8" : ""}`}
+                >
+                  <img src={imagem} alt="" width={600} height={600} loading="lazy" decoding="async" className="h-full w-full object-cover" />
+                  <span
+                    title={rotulo}
+                    className={`absolute left-1/2 top-1/2 grid -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-[#1c1b19] shadow-[0_6px_18px_-8px_rgba(28,27,25,0.5)] backdrop-blur-sm ${i === 1 ? "size-11 sm:size-16" : "size-9 sm:size-12"}`}
+                  >
+                    <Icone size={i === 1 ? 28 : 22} weight="regular" aria-hidden="true" />
+                    <span className="sr-only">{rotulo}</span>
+                  </span>
                 </div>
+              ))}
+            </div>
+            <p className="max-w-[20rem] text-[0.82rem] text-[#8a8983]">Material pronto para edição, coedição ou licenciamento.</p>
+            <Button asChild size="lg" className="mt-5">
+              <a href="/parcerias">Conhecer as possibilidades</a>
+            </Button>
+          </div>
+          <div className="grid gap-3">
+            {[
+              { icone: Cards, t: "30 ilustrações autorais", d: "Da Visionária à Ceifadora, cada uma com seu mundo." },
+              { icone: FlowerLotus, t: "6 famílias simbólicas", d: "Direções, animais, mundos, elementos, rostos do feminino e luas." },
+              { icone: BookOpenText, t: "Textos para cada carta", d: "Frase, palavras-semente, luz, sombra e um ritual de ativação." },
+            ].map(({ icone: Icone, t, d }) => (
+              <div key={t} className="flex flex-col justify-between rounded-[28px] bg-[#f2f1ed] p-6 sm:min-h-[11rem] sm:p-8">
+                <div className="flex items-start justify-between gap-4">
+                  <h3 className="font-serif text-[1.4rem] leading-tight sm:text-[1.7rem]">{t}</h3>
+                  <Icone size={26} weight="light" className="shrink-0 text-[#8a8983]" />
+                </div>
+                <p className="mt-3 max-w-[18rem] text-[0.9rem] leading-relaxed text-[#77766f] sm:mt-6">{d}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section id="parcerias" className="bg-[#172d24] px-5 py-20 text-[#fffaf2] sm:px-8 lg:px-12 lg:py-28">
-        <div className="mx-auto max-w-7xl">
-          <div className="grid gap-12 lg:grid-cols-[.9fr_1.1fr] lg:items-center">
-            <div className="max-w-xl">
-              <p className="mb-5 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.19em] text-[#d6ad67]">
-                <span className="h-px w-7 bg-[#d6ad67]" /> para editoras e parcerias
-              </p>
-              <h2 className="font-serif text-4xl leading-[.98] tracking-[-0.06em] sm:text-5xl">Um universo pronto para ganhar novas formas.</h2>
-              <p className="mt-6 text-lg leading-relaxed text-[#d7e1d0]">O Jardim Arquetípico pode florescer como livro, box, experiência expositiva, projeto de marca ou encontro de criação. A mesma raiz, novas paisagens.</p>
-              <Button asChild size="lg" className="mt-8 rounded-full bg-[#d6ad67] px-6 text-[#172d24] hover:bg-[#f0cb85]">
-                <a href="#criadoras">Conhecer as criadoras <ArrowRight size={18} weight="bold" aria-hidden="true" /></a>
+      {/* Convite */}
+      <section className="conteiner mt-16 sm:mt-44">
+        <div className="grid gap-3 md:grid-cols-2">
+          <div className="flex flex-col justify-between rounded-[28px] bg-[#1f3d2b] p-8 text-white sm:p-12">
+            <MoonStars size={30} weight="light" className="text-white" />
+            <div className="mt-10 sm:mt-16">
+              <h2 className="font-serif text-[1.55rem] lg:whitespace-nowrap leading-[1.1] sm:text-[1.9rem] xl:text-[2.3rem]">Para quem busca um respiro</h2>
+              <p className="mt-3 text-[0.92rem] leading-relaxed text-white/85 lg:whitespace-nowrap">Uma carta pode ser a pausa mais bonita do seu dia.</p>
+              <Button asChild size="lg" className="mt-8 bg-white text-[#1f3d2b] hover:bg-white/85">
+                <a href="/imersao">Tirar uma carta</a>
               </Button>
             </div>
-            <div className="grid gap-4 sm:grid-cols-3">
-              <Card className="rounded-[1.5rem] border-[#fffaf2]/15 bg-[#274337] py-0 text-[#fffaf2] shadow-none">
-                <CardContent className="p-6">
-                  <BookOpenText size={27} weight="duotone" className="text-[#d6ad67]" aria-hidden="true" />
-                  <h3 className="mt-12 font-serif text-2xl">Edição</h3>
-                  <p className="mt-3 text-sm leading-relaxed text-[#d7e1d0]">Livros, boxes, edições especiais e objetos de leitura.</p>
-                </CardContent>
-              </Card>
-              <Card className="rounded-[1.5rem] border-[#fffaf2]/15 bg-[#274337] py-0 text-[#fffaf2] shadow-none">
-                <CardContent className="p-6">
-                  <Handshake size={27} weight="duotone" className="text-[#d6ad67]" aria-hidden="true" />
-                  <h3 className="mt-12 font-serif text-2xl">Encontros</h3>
-                  <p className="mt-3 text-sm leading-relaxed text-[#d7e1d0]">Rodas, oficinas, ativações e experiências de presença.</p>
-                </CardContent>
-              </Card>
-              <Card className="rounded-[1.5rem] border-[#fffaf2]/15 bg-[#274337] py-0 text-[#fffaf2] shadow-none">
-                <CardContent className="p-6">
-                  <Leaf size={27} weight="duotone" className="text-[#d6ad67]" aria-hidden="true" />
-                  <h3 className="mt-12 font-serif text-2xl">Colaborações</h3>
-                  <p className="mt-3 text-sm leading-relaxed text-[#d7e1d0]">Projetos autorais para marcas, espaços e comunidades.</p>
-                </CardContent>
-              </Card>
+          </div>
+          <div className="flex flex-col justify-between rounded-[28px] bg-[#f2f1ed] p-8 sm:p-12">
+            <HandHeart size={30} weight="light" className="text-[#8a8983]" />
+            <div className="mt-10 sm:mt-16">
+              <h2 className="font-serif text-[1.55rem] lg:whitespace-nowrap leading-[1.1] sm:text-[1.9rem] xl:text-[2.3rem]">Para quem quer fazer florescer</h2>
+              <p className="mt-3 text-[0.92rem] leading-relaxed text-[#6b6a65] lg:whitespace-nowrap">Editoras, lojas, marcas e rodas: vamos plantar este jardim juntas.</p>
+              <Button asChild size="lg" className="mt-8">
+                <a href="/parcerias#contato">Quero conversar</a>
+              </Button>
             </div>
           </div>
         </div>
       </section>
-
-      <section id="criadoras" className="px-5 py-20 sm:px-8 lg:px-12 lg:py-28">
-        <div className="mx-auto max-w-7xl">
-          <div className="max-w-2xl">
-            <p className="mb-5 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.19em] text-[#c95736]">
-              <span className="h-px w-7 bg-[#c95736]" /> quem cultiva este jardim
-            </p>
-            <h2 className="font-serif text-4xl leading-[.98] tracking-[-0.06em] sm:text-5xl">Duas mulheres, muitas imagens, um convite à imaginação.</h2>
-          </div>
-          <div className="mt-12 grid gap-5 lg:grid-cols-2">
-            <Card className="rounded-[1.75rem] border-[#172d24]/10 bg-[#efe5d5] py-0 shadow-none">
-              <CardContent className="p-7 sm:p-9">
-                <Quotes size={32} weight="fill" className="text-[#c95736]" aria-hidden="true" />
-                <p className="mt-7 text-lg leading-relaxed text-[#365042]">Graziela Peres é designer, diretora criativa, curiosa por natureza e pesquisadora. Construiu seu trabalho no encontro entre imagem, narrativa, cultura e intuição.</p>
-                <p className="mt-5 leading-relaxed text-[#52695b]">Nos últimos anos, aprofundou sua pesquisa sobre arquétipos, sonhos, natureza e linguagens simbólicas de diferentes tradições. Dessa investigação nasceu o Jardim Arquetípico: um projeto autoral para ampliar a percepção de si e dos ciclos da vida.</p>
-                <p className="mt-8 text-sm font-semibold uppercase tracking-[0.15em] text-[#c95736]">Graziela Peres · autora e direção criativa</p>
-              </CardContent>
-            </Card>
-            <Card className="rounded-[1.75rem] border-[#172d24]/10 bg-[#d8e1b8] py-0 shadow-none">
-              <CardContent className="p-7 sm:p-9">
-                <Quotes size={32} weight="fill" className="text-[#365042]" aria-hidden="true" />
-                <p className="mt-7 text-lg leading-relaxed text-[#365042]">Thaís Teófilo é artista visual e designer, com uma prática atravessada pela criação de personagens, narrativas e universos simbólicos.</p>
-                <p className="mt-5 leading-relaxed text-[#52695b]">Convidada por Graziela, interpretou visualmente as pesquisas, os símbolos e as narrativas do projeto, criando personagens e cenas entre o íntimo e o coletivo, o natural e o mítico.</p>
-                <p className="mt-8 text-sm font-semibold uppercase tracking-[0.15em] text-[#365042]">Thaís Teófilo · ilustrações</p>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      <footer className="bg-[#c95736] px-5 py-16 text-[#fffaf2] sm:px-8 lg:px-12">
-        <div className="mx-auto flex max-w-7xl flex-col justify-between gap-10 md:flex-row md:items-end">
-          <div className="max-w-2xl">
-            <p className="text-xs font-semibold uppercase tracking-[0.19em] text-[#ffe1b4]">uma ideia pode começar numa conversa</p>
-            <h2 className="mt-5 font-serif text-4xl leading-[.98] tracking-[-0.06em] sm:text-5xl">Se este jardim encontrou lugar na sua curadoria, vamos fazê-lo crescer.</h2>
-          </div>
-          <div className="flex flex-col items-start gap-4 md:items-end">
-            <Button asChild size="lg" className="rounded-full bg-[#fffaf2] px-6 text-[#c95736] hover:bg-[#172d24] hover:text-[#fffaf2]">
-              <a href="#inicio">Voltar ao início <ArrowUpRight size={18} weight="bold" aria-hidden="true" /></a>
-            </Button>
-            <p className="text-sm text-[#ffe1b4]">Jardim Arquetípico · Graziela Peres & Thaís Teófilo</p>
-          </div>
-        </div>
-      </footer>
     </main>
   );
 }
