@@ -343,9 +343,7 @@ export default function Oraculo() {
         </div>
         <div className="mt-8">
           <Button asChild size="lg">
-            <a href="/imersao">
-              Fazer a tiragem Raiz, Caule e Flor
-            </a>
+            <a href="/imersao">Tirar uma carta</a>
           </Button>
         </div>
       </section>
