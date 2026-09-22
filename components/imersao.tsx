@@ -244,10 +244,15 @@ function Mesa({ ordem, onOutra }: { ordem: number[]; onOutra: () => void }) {
                       ["Sombra", "o ponto onde ela pede cuidado"],
                       ["Ritual de ativação", "um gesto simples para viver a carta"],
                     ].map(([t, d]) => (
-                      <li key={t} className="flex items-center gap-3">
-                        <Sparkle size={14} weight="fill" className="shrink-0 text-[#b9a6c9]" aria-hidden="true" />
-                        <span className="text-[0.92rem] text-[#1c1b19]">{t}</span>
-                        <span className="hidden text-[0.85rem] text-[#8a8983] sm:inline">· {d}</span>
+                      <li key={t} className="flex items-start gap-3 sm:items-center">
+                        <Sparkle size={14} weight="fill" className="mt-1 shrink-0 text-[#b9a6c9] sm:mt-0" aria-hidden="true" />
+                        <span className="flex flex-col sm:flex-row sm:items-center sm:gap-1.5">
+                          <span className="text-[0.92rem] text-[#1c1b19]">{t}</span>
+                          <span className="text-[0.85rem] leading-snug text-[#8a8983]">
+                            <span className="hidden sm:inline">· </span>
+                            {d}
+                          </span>
+                        </span>
                         <span aria-hidden="true" className="ml-auto hidden h-2 w-16 rounded-full bg-[#e2e0da] sm:block" />
                       </li>
                     ))}
@@ -261,7 +266,7 @@ function Mesa({ ordem, onOutra }: { ordem: number[]; onOutra: () => void }) {
                         Quero o Jardim Arquetípico
                       </a>
                     </Button>
-                    <Button size="lg" variant="secondary" onClick={onOutra}>
+                    <Button size="lg" variant="secondary" className="bg-white hover:bg-white/80" onClick={onOutra}>
                       Tirar outra carta
                     </Button>
                   </div>
